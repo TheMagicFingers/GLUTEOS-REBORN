@@ -10,6 +10,7 @@
 #include <time.h>
 #include <array>
 #include <vector>
+#include <fstream>
 
 int vp_width = 640;
 int vp_height = 480;
@@ -17,8 +18,7 @@ std::array<int , 2> currentPt;
 std::vector<std::array<int, 2>> pts;
 bool closed = false;
 
-void myInit(void)
-{
+void myInit(void){
 	glClearColor(1.0, 1.0, 1.0, 0.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -26,8 +26,7 @@ void myInit(void)
 	glClear(GL_COLOR_BUFFER_BIT);
 	glFlush();
 }
-void draw_polygon(int button, int state, int x, int y)
-{
+void draw_polygon(int button, int state, int x, int y){
     currentPt = std::array<int, 2>{x, vp_height-y};
 
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
@@ -40,13 +39,11 @@ void draw_polygon(int button, int state, int x, int y)
     if ( button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN )
         closed = true;
 }
-void mouse_move(int x, int y)
-{
+void mouse_move(int x, int y){
     currentPt = std::array<int, 2>{x, vp_height-y};
     glutPostRedisplay();
 }
-void display(void)
-{
+void display(void){
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT);
     if ( !pts.empty() )
@@ -60,8 +57,7 @@ void display(void)
     }
     glutSwapBuffers();
 }
-void menu_function(int item)
-{
+void menu_function(int item){
 switch(item)
     {
     case 1:
@@ -86,8 +82,8 @@ void myTranslate(float tx, float ty) {
         pt[1] = (float) pt[1] + ty;
 
         if(pt[0] > vp_width || pt[0] < 0 || pt[1] > vp_height || pt[1] < 0){
-            pt[0] = vp_width;
-            pt[1] = vp_height;
+            pt[0] = pt[0];
+            pt[1] = pt[1];
         }
         glutPostRedisplay();
     }
@@ -117,9 +113,11 @@ void myScale(float sx, float sy){
     }
 }
 void MyMirroring(){
-//wtf is this
 }
 void save(){
+
+}
+void changeColor(){
 
 }
 void keyboard_cb(unsigned char key, int X, int Y){
@@ -131,18 +129,28 @@ void keyboard_cb(unsigned char key, int X, int Y){
           myTranslate(10,10);
           break;
       case 'r':
-          myRotate(0.5);
+          myRotate(0.01);
           break;
       case 's':
           myScale(1.1,1.2);
           break;
-
-
+      case 'm':
+          MyMirroring();
+          break;
+      case 'c':
+          changeColor();
+          break;
   }
 }
+void instructions() {
+    printf("Instructions \n");
+    printf("A - show Points \n");
+    printf("R - rotate Object \n");
+    printf("S - scale Object \n");
+    printf("M - mirror object \n");
+    printf("C - change Color \n");
 
-
-
+}
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
@@ -156,6 +164,7 @@ int main(int argc, char** argv)
     glMatrixMode( GL_PROJECTION );
     glOrtho(0.0f, (float)vp_width, 0.0f, (float)vp_height, -1.0, 1.0);
     myInit();
+    instructions();
     glutMainLoop();
 
     return 0;
