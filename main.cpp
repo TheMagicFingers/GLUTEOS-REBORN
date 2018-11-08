@@ -20,7 +20,7 @@ std::vector<std::vector<std::array<int,2>> > allPoints;
 
 int r = 1.0,g = 1.0,b = 1.0;
 
-bool closed = false;
+bool closed = false, draw = false;
 
 void myInit(void){
 	glClearColor(1.0, 1.0, 1.0, 0.0);
@@ -147,6 +147,15 @@ void instructions() {
 void menuPrincipal(int op){
 
 }
+void menuDraw(int op){
+	switch(op){
+		case 0:
+			draw = true;
+	        break;
+	    case 1:
+	    	closed = true;
+	}
+}
 void menuCor(int op){
     switch(op){
     case 0:
@@ -189,8 +198,9 @@ void menuOptions(int op){
 void criaMenu(){
     int menu,submenu1,submenu2,submenu3;
 
-    submenu1 = glutCreateMenu(menuDraw);
-    glutAddMenuEntry("Criar Desenho");
+    submenu3 = glutCreateMenu(menuDraw);
+    glutAddMenuEntry("Criar Desenho",0);
+    glutAddMenuEntry("Terminar Desenho",1);
 
     submenu1 = glutCreateMenu(menuOptions);
     glutAddMenuEntry("Salvar poligono",0);
@@ -204,6 +214,7 @@ void criaMenu(){
     glutAddMenuEntry("Branco",3);
 
     menu = glutCreateMenu(menuPrincipal);
+    glutAddSubMenu("Desenhar",submenu3);
     glutAddSubMenu("Options",submenu1);
     glutAddSubMenu("Colors",submenu2);
 
@@ -212,7 +223,7 @@ void criaMenu(){
 void draw_polygon(int button, int state, int x, int y){
     currentPt = std::array<int, 2>{x, vp_height-y};
 
-    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && draw == true)
     {
         if ( closed )
             pts.clear(); // restart if last action was close
