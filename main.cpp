@@ -106,15 +106,16 @@ void myScale(float sx, float sy){
     }
 }
 void MyMirroring(){
+
     int maxX = pts[0][0];
+
     for ( auto &pt : pts ){
         if (pt[0] > maxX)
             maxX = pt[0];
     }
 
-    for ( auto &pt : pts) {
+    for ( auto &pt : pts)
         pt[0] = maxX + (maxX - pt[0]);
-    }
 }
 void save(){
 
