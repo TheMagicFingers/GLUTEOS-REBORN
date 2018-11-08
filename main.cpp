@@ -68,15 +68,28 @@ void myTranslate(float tx, float ty) {
         glutPostRedisplay();
     }
 }
-void myRotate(float degree){
-    for ( auto &pt : pts ){
-        pt[0] = (float)pt[0] * cos(degree)  - (float)pt[1] * sin(degree);
-        pt[1] =  (float) pt[1] * sin(degree) + (float) pt[0] * cos(degree);
+void myRotate(){
+    float ang = 45 * 3.14 / 180.0;
+    int tmp_x, tmp_y, cx, cy;
 
-        if(pt[0] > vp_width || pt[0] < 0 || pt[1] > vp_height || pt[1] < 0){
-            pt[0] = vp_width;
-            pt[1] = vp_height;
+    for ( auto &pt : pts ){
+        cx = 0;
+        cy = 0;
+
+        for ( auto &pt : pts ){
+            cx += pt[0];
+            cy += pt[1];
         }
+
+        cx /= pts.size();
+        cy /= pts.size();
+
+        tmp_x = cx + ((float)pt[0]-cx)*cos(ang) - ((float)pt[1]-cy)*sin(ang);
+        tmp_y = cy + ((float)pt[0]-cx)*sin(ang) + ((float)pt[1]-cy)*cos(ang);
+
+        pt[0] = tmp_x;
+        pt[1] = tmp_y;
+        
         glutPostRedisplay();
     }
 }
@@ -94,15 +107,16 @@ void myScale(float sx, float sy){
     }
 }
 void MyMirroring(){
+
     int maxX = pts[0][0];
+
     for ( auto &pt : pts ){
         if (pt[0] > maxX)
             maxX = pt[0];
     }
 
-    for ( auto &pt : pts) {
+    for ( auto &pt : pts)
         pt[0] = maxX + (maxX - pt[0]);
-    }
 }
 void save(){
 
@@ -120,7 +134,7 @@ void keyboard_cb(unsigned char key, int X, int Y){
           myTranslate(10,10);
           break;
       case 'r':
-          myRotate(0.01);
+          myRotate();
           break;
       case 's':
           myScale(1.1,1.2);
