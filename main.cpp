@@ -164,6 +164,11 @@ void menuCor(int op){
         g = 0.0,
         b = 1.0;
         break;
+    case 3:
+        r = 1.0,
+        g = 1.0,
+        b = 1.0;
+        break;
     }
     glutPostRedisplay();
 }
@@ -182,7 +187,10 @@ void menuOptions(int op){
     glutPostRedisplay();
 }
 void criaMenu(){
-    int menu,submenu1,submenu2;
+    int menu,submenu1,submenu2,submenu3;
+
+    submenu1 = glutCreateMenu(menuDraw);
+    glutAddMenuEntry("Criar Desenho");
 
     submenu1 = glutCreateMenu(menuOptions);
     glutAddMenuEntry("Salvar poligono",0);

@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1541627897 source:c:\users\lucas\desktop\test\main.cpp
+1541646801 source:c:\users\lucas\desktop\test\main.cpp
 	<stdio.h>
 	<GLUT/glut.h>
 	<GL/glut.h>
@@ -8,6 +8,7 @@
 	<time.h>
 	<array>
 	<vector>
+	<fstream>
 
 1426364128 c:\program files (x86)\codeblocks\mingw\include\gl\glut.h
 	"freeglut_std.h"
