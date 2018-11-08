@@ -250,3 +250,14 @@
 	<_mingw.h>
 	<stddef.h>
 
+1541646498 source:c:\users\lucas\documents\github\gluteos-reborn\main.cpp
+	<stdio.h>
+	<GLUT/glut.h>
+	<GL/glut.h>
+	<stdlib.h>
+	<math.h>
+	<time.h>
+	<array>
+	<vector>
+	<fstream>
+
