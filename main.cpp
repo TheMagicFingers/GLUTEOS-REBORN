@@ -140,7 +140,21 @@ void menuPrincipal(int op){
 }
 void menuCor(int op){
     switch(op){
-
+    case 0:
+        r  = 1.0,
+        g = 0.0,
+        b = 0.0;
+        break;
+    case 1:
+        r  = 0.0,
+        g = 1.0,
+        b = 0.0;
+        break;
+    case 2:
+        r  = 0.0,
+        g = 0.0,
+        b = 1.0;
+        break;
     }
     glutPostRedisplay();
 }
@@ -170,9 +184,11 @@ void criaMenu(){
     glutAddMenuEntry("Vermelho",0);
     glutAddMenuEntry("Verde",1);
     glutAddMenuEntry("Azul",2);
+    glutAddMenuEntry("Branco",3);
 
     menu = glutCreateMenu(menuPrincipal);
     glutAddSubMenu("Options",submenu1);
+    glutAddSubMenu("Colors",submenu2);
 
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
@@ -186,10 +202,10 @@ void draw_polygon(int button, int state, int x, int y){
         closed = false;
         pts.push_back( currentPt );
     }
-    if ( button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN )
-        closed = true;
+   /* if ( button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN )
+        closed = true;*/
 
-    if(button == GLUT_MIDDLE_BUTTON && state == GLUT_DOWN)
+    if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
         criaMenu();
 }
 int main(int argc, char** argv)
