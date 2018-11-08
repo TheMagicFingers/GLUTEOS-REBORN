@@ -16,7 +16,6 @@ int vp_width = 640;
 int vp_height = 480;
 std::array<int , 2> currentPt;
 std::vector<std::array<int, 2>> pts;
-std::vector<std::vector<std::array<int,2>> > allPoints;
 
 int r = 1.0,g = 1.0,b = 1.0;
 
@@ -38,6 +37,7 @@ void display(void){
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT);
     glColor3f(r,g,b);
+
     if ( !pts.empty() )
     {
         glBegin(GL_LINE_STRIP);
@@ -50,11 +50,12 @@ void display(void){
     glutSwapBuffers();
 }
 void printPoints(){
-     printf("\nAll points of the figure\n");
-     for ( auto &pt : pts ){
-      printf("X--> %d Y-->%d\n",pt[0],pt[1]);
+    printf("\nAll points of the figure of all figures\n");
+    for ( auto &pt : pts ){
+            printf("X--> %d Y-->%d\n",pt[0],pt[1]);
     }
-}
+ }
+
 void myTranslate(float tx, float ty) {
     for ( auto &pt : pts ){
         pt[0] = (float) pt[0] + tx;
@@ -106,9 +107,7 @@ void MyMirroring(){
 void save(){
 
 }
-void changeColor(){
 
-}
 void keyboard_cb(unsigned char key, int X, int Y){
   switch(key){
       case 'a':         /*27 corresponde ao ESC, e está sendo utilizado para sair*/
@@ -129,9 +128,6 @@ void keyboard_cb(unsigned char key, int X, int Y){
       case 'm':
           MyMirroring();
           break;
-      case 'c':
-          changeColor();
-          break;
   }
 }
 void instructions() {
@@ -151,9 +147,17 @@ void menuDraw(int op){
 	switch(op){
 		case 0:
 			draw = true;
+			closed = false;
 	        break;
 	    case 1:
 	    	closed = true;
+	    	draw = false;
+	    	break;
+        case 2:
+            closed = false;
+            draw = false;
+            pts.clear();
+            break;
 	}
 }
 void menuCor(int op){
@@ -199,8 +203,9 @@ void criaMenu(){
     int menu,submenu1,submenu2,submenu3;
 
     submenu3 = glutCreateMenu(menuDraw);
-    glutAddMenuEntry("Criar Desenho",0);
+    glutAddMenuEntry("Criar novo Desenho",0);
     glutAddMenuEntry("Terminar Desenho",1);
+    glutAddMenuEntry("Limpar tela",2);
 
     submenu1 = glutCreateMenu(menuOptions);
     glutAddMenuEntry("Salvar poligono",0);
@@ -224,14 +229,7 @@ void draw_polygon(int button, int state, int x, int y){
     currentPt = std::array<int, 2>{x, vp_height-y};
 
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && draw == true)
-    {
-        if ( closed )
-            pts.clear(); // restart if last action was close
-        closed = false;
         pts.push_back( currentPt );
-    }
-   /* if ( button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN )
-        closed = true;*/
 
     if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
         criaMenu();
