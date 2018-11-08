@@ -16,6 +16,10 @@ int vp_width = 640;
 int vp_height = 480;
 std::array<int , 2> currentPt;
 std::vector<std::array<int, 2>> pts;
+std::vector<std::vector<std::array<int,2>> > allPoints;
+
+int r = 1.0,g = 1.0,b = 1.0;
+
 bool closed = false;
 
 void myInit(void){
@@ -26,19 +30,6 @@ void myInit(void){
 	glClear(GL_COLOR_BUFFER_BIT);
 	glFlush();
 }
-void draw_polygon(int button, int state, int x, int y){
-    currentPt = std::array<int, 2>{x, vp_height-y};
-
-    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
-    {
-        if ( closed )
-            pts.clear(); // restart if last action was close
-        closed = false;
-        pts.push_back( currentPt );
-    }
-    if ( button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN )
-        closed = true;
-}
 void mouse_move(int x, int y){
     currentPt = std::array<int, 2>{x, vp_height-y};
     glutPostRedisplay();
@@ -46,6 +37,7 @@ void mouse_move(int x, int y){
 void display(void){
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT);
+    glColor3f(r,g,b);
     if ( !pts.empty() )
     {
         glBegin(GL_LINE_STRIP);
@@ -57,24 +49,11 @@ void display(void){
     }
     glutSwapBuffers();
 }
-void menu_function(int item){
-switch(item)
-    {
-    case 1:
-        break;
-    case 2:
-        break;
-    case 3:
-        break;
-    case 4:
-        break;
-    case 5:
-        break;
-    default:
-        break;
+void printPoints(){
+     printf("\nAll points of the figure\n");
+     for ( auto &pt : pts ){
+      printf("X--> %d Y-->%d\n",pt[0],pt[1]);
     }
-    glutPostRedisplay();
-    return;
 }
 void myTranslate(float tx, float ty) {
     for ( auto &pt : pts ){
@@ -101,10 +80,11 @@ void myRotate(float degree){
     }
 }
 void myScale(float sx, float sy){
+    printf("\n Scale \n");
     for ( auto &pt : pts ){
         pt[0] = (float) pt[0] * sx;
         pt[1] = (float) pt[1] * sy;
-
+        printf("new Points X-> %d Y ->%d \n", pt[0],pt[1]);
         if(pt[0] > vp_width || pt[0] < 0 || pt[1] > vp_height || pt[1] < 0){
             pt[0] = vp_width;
             pt[1] = vp_height;
@@ -123,6 +103,9 @@ void changeColor(){
 void keyboard_cb(unsigned char key, int X, int Y){
   switch(key){
       case 'a':         /*27 corresponde ao ESC, e está sendo utilizado para sair*/
+          printPoints();
+          break;
+      case 'p':         /*27 corresponde ao ESC, e está sendo utilizado para sair*/
           printf(" pointX -> %d  pointY -> %d \n", currentPt[0], currentPt[1]);
           break;
       case 't':
@@ -145,11 +128,69 @@ void keyboard_cb(unsigned char key, int X, int Y){
 void instructions() {
     printf("Instructions \n");
     printf("A - show Points \n");
+    printf("P - show current point \n");
     printf("R - rotate Object \n");
     printf("S - scale Object \n");
     printf("M - mirror object \n");
     printf("C - change Color \n");
 
+}
+void menuPrincipal(int op){
+
+}
+void menuCor(int op){
+    switch(op){
+
+    }
+    glutPostRedisplay();
+}
+void menuOptions(int op){
+    switch(op){
+    case 0:
+        printf("Salvando...");
+        break;
+    case 1:
+        printf("Carregando...");
+        break;
+    case 2:
+        printf("Saindo...");
+        break;
+    }
+    glutPostRedisplay();
+}
+void criaMenu(){
+    int menu,submenu1,submenu2;
+
+    submenu1 = glutCreateMenu(menuOptions);
+    glutAddMenuEntry("Salvar poligono",0);
+    glutAddMenuEntry("Carregar poligono",1);
+    glutAddMenuEntry("Sair",2);
+
+    submenu2 = glutCreateMenu(menuCor);
+    glutAddMenuEntry("Vermelho",0);
+    glutAddMenuEntry("Verde",1);
+    glutAddMenuEntry("Azul",2);
+
+    menu = glutCreateMenu(menuPrincipal);
+    glutAddSubMenu("Options",submenu1);
+
+    glutAttachMenu(GLUT_RIGHT_BUTTON);
+}
+void draw_polygon(int button, int state, int x, int y){
+    currentPt = std::array<int, 2>{x, vp_height-y};
+
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+    {
+        if ( closed )
+            pts.clear(); // restart if last action was close
+        closed = false;
+        pts.push_back( currentPt );
+    }
+    if ( button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN )
+        closed = true;
+
+    if(button == GLUT_MIDDLE_BUTTON && state == GLUT_DOWN)
+        criaMenu();
 }
 int main(int argc, char** argv)
 {
