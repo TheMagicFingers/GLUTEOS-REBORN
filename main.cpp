@@ -8,9 +8,16 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <string>
+#include <algorithm>
+#include <iterator>
 #include <array>
 #include <vector>
+#include <cstdlib>
 #include <fstream>
+#include <iostream>
+
+using namespace std;
 
 int vp_width = 640;
 int vp_height = 480;
@@ -68,8 +75,22 @@ void myTranslate(float tx, float ty) {
         glutPostRedisplay();
     }
 }
+
+void myScale(float sx, float sy){
+    printf("\n Scale \n");
+    for ( auto &pt : pts ){
+        pt[0] = (float) pt[0] * sx;
+        pt[1] = (float) pt[1] * sy;
+        printf("new Points X-> %d Y ->%d \n", pt[0],pt[1]);
+        if(pt[0] > vp_width || pt[0] < 0 || pt[1] > vp_height || pt[1] < 0){
+            pt[0] = vp_width;
+            pt[1] = vp_height;
+        }
+        glutPostRedisplay();
+    }
+}
 void myRotate(){
-    float ang = 45 * 3.14 / 180.0;
+    float ang = 3.14 / 2;
     int tmp_x, tmp_y, cx, cy;
 
     for ( auto &pt : pts ){
@@ -89,20 +110,7 @@ void myRotate(){
 
         pt[0] = tmp_x;
         pt[1] = tmp_y;
-        
-        glutPostRedisplay();
-    }
-}
-void myScale(float sx, float sy){
-    printf("\n Scale \n");
-    for ( auto &pt : pts ){
-        pt[0] = (float) pt[0] * sx;
-        pt[1] = (float) pt[1] * sy;
-        printf("new Points X-> %d Y ->%d \n", pt[0],pt[1]);
-        if(pt[0] > vp_width || pt[0] < 0 || pt[1] > vp_height || pt[1] < 0){
-            pt[0] = vp_width;
-            pt[1] = vp_height;
-        }
+
         glutPostRedisplay();
     }
 }
@@ -117,31 +125,73 @@ void MyMirroring(){
 
     for ( auto &pt : pts)
         pt[0] = maxX + (maxX - pt[0]);
+
+    glutPostRedisplay();
+}
+void MyMirroring1(){
+
+    int minX = pts[0][0];
+
+    for ( auto &pt : pts ){
+        if (pt[0] < minX)
+            minX = pt[0];
+    }
+
+    for ( auto &pt : pts)
+        pt[0] = minX + (minX - pt[0]);
+
+    glutPostRedisplay();
 }
 void save(){
-
+    ofstream outfile;
+    srand (time(NULL));
+    int name = rand()%100;
+    outfile.open("C:\\Users\\lucas\\Downloads\\GLUTEOS-REBORN\\polygons\\polygon-0x5219.txt", ios::out);//std::ios_base::app
+    for ( auto &pt : pts ){
+        outfile << pt[0] << " " << pt[1] << endl;
+    }
+    outfile << "-" << endl;
+    outfile << r << " " << g << " " << b << endl;
+    outfile.close();
 }
-
 void keyboard_cb(unsigned char key, int X, int Y){
   switch(key){
-      case 'a':         /*27 corresponde ao ESC, e está sendo utilizado para sair*/
+      case 'p':         /*27 corresponde ao ESC, e está sendo utilizado para sair*/
           printPoints();
           break;
-      case 'p':         /*27 corresponde ao ESC, e está sendo utilizado para sair*/
+      case 'f':         /*27 corresponde ao ESC, e está sendo utilizado para sair*/
           printf(" pointX -> %d  pointY -> %d \n", currentPt[0], currentPt[1]);
           break;
-      case 't':
-          myTranslate(10,10);
+      case 's':
+          myTranslate(0,-10);
+          break;
+      case 'a':
+          myTranslate(-10,0);
+          break;
+      case 'w':
+          myTranslate(0,10);
+          break;
+      case 'd':
+          myTranslate(10,0);
           break;
       case 'r':
           myRotate();
           break;
-      case 's':
+      case 'x':
           myScale(1.1,1.2);
           break;
       case 'm':
           MyMirroring();
           break;
+      case 'j':
+        save();
+        break;
+      case ' ':
+        glBegin(GL_POLYGON);
+        break;
+      case 'n':
+        MyMirroring1();
+        break;
   }
 }
 void instructions() {
@@ -199,16 +249,74 @@ void menuCor(int op){
     }
     glutPostRedisplay();
 }
+void save_file_name(string name){
+    ofstream outfile;
+    outfile.open("C:\\Users\\lucas\\Downloads\\GLUTEOS-REBORN\\config\\files.txt", ios::out);
+    outfile << name << ".txt" << endl;
+    outfile .close();
+}
+
+vector<string> get_file_names(){
+    string STRING;
+	ifstream infile;
+
+	infile.open("C:\\Users\\lucas\\Downloads\\GLUTEOS-REBORN\\config\\files.txt");
+	while(infile>>STRING){
+        cout<<"/"<<STRING<<"/"<<endl;
+	}
+
+	infile.close();
+}
+
+void load(string name){
+    save_file_name(name);
+    string STRING;
+	ifstream infile;
+    int i=0;
+    pts.clear();
+
+	infile.open("C:\\Users\\lucas\\Downloads\\GLUTEOS-REBORN\\polygons\\"+name+".txt");
+	if(infile.fail())
+        cout << "fail" << endl;
+
+    while(infile>>STRING) // To get you all the lines.
+    {
+        //getline(infile,STRING); // Saves the line in STRING.
+        cout<<"/"<<STRING<<"/"<<endl; // Prints our STRING.
+        if(STRING == "-")
+            break;
+
+        if(i % 2 == 0){
+            cout << "into x: " << stoi(STRING) << endl;
+            currentPt[0] = stoi(STRING);
+        }
+        else{
+            cout << "into y: " << stoi(STRING) << endl;
+            currentPt[1] = stoi(STRING);
+        }
+
+        i++;
+        if(i % 2 == 0 && i != 0)
+            pts.push_back(currentPt);
+    }
+    closed = true;
+	infile.close();
+	glutPostRedisplay();
+}
+
 void menuOptions(int op){
     switch(op){
     case 0:
-        printf("Salvando...");
+        printf("Salvando...\n");
+        save();
         break;
     case 1:
-        printf("Carregando...");
+        printf("Carregando...\n");
+        load("polygon-0x5219");
+        //get_file_names();
         break;
     case 2:
-        printf("Saindo...");
+        printf("Saindo...\n");
         break;
     }
     glutPostRedisplay();

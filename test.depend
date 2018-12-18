@@ -262,3 +262,19 @@
 	<vector>
 	<fstream>
 
+1541686926 source:c:\users\lucas\downloads\gluteos-reborn\main.cpp
+	<stdio.h>
+	<GLUT/glut.h>
+	<GL/glut.h>
+	<stdlib.h>
+	<math.h>
+	<time.h>
+	<string>
+	<algorithm>
+	<iterator>
+	<array>
+	<vector>
+	<cstdlib>
+	<fstream>
+	<iostream>
+
